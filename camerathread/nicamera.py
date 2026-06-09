@@ -46,8 +46,9 @@ class OpenNICamera(BaseCamera):
         depth_colormap = cv2.applyColorMap(depth_uint8, cv2.COLORMAP_JET)
 
         return {
-            "color": color,
-            "depth": depth_colormap
+            "color":     color,
+            "depth":     depth,           # uint16 en mm — para inferencia
+            "depth_viz": depth_colormap,  # BGR visual — solo para display
         }
 
     def stop(self):

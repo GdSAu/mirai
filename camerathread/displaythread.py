@@ -17,11 +17,11 @@ class DisplayThread(threading.Thread):
                 while True:
                     item = self.queue.get_nowait()
 
-                    cam_id = item["cam_id"]
-                    color  = item["color"]
-                    depth = item.get("depth", None)
+                    cam_id    = item["cam_id"]
+                    color     = item["color"]
+                    depth_viz = item.get("depth_viz", None)
 
-                    self.frames[cam_id] = (color, depth)
+                    self.frames[cam_id] = (color, depth_viz)
 
             except queue.Empty:
                 pass

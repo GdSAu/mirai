@@ -11,37 +11,37 @@ class CameraThread(threading.Thread):
         self.running = True
 
     def run(self):
-        while self.running:
-            data = self.cam.read()
+        try:
+            while self.running:
+                data = self.cam.read()
 
-            if data is None:
-                continue
+                if data is None:
+                    continue
 
-            # 🔥 NORMALIZACIÓN DE FORMATO
-            if isinstance(data, dict):
-                color = data["color"]
-                depth = data.get("depth", None)
-            else:
-                # USB / OpenCV
-                color = data
-                depth = None
+                if isinstance(data, dict):
+                    color     = data["color"]
+                    depth     = data.get("depth", None)      # uint16 mm (RealSense/OpenNI)
+                    depth_viz = data.get("depth_viz", None)  # BGR colormap para display
+                else:
+                    color     = data
+                    depth     = None
+                    depth_viz = None
 
-            payload = {
-                "cam_id": self.cam_id,
-                "color": color,
-                "depth": depth
-            }
-            # Inferencia (prioridad tiempo real)
-            if not self.q_infer.full():
-                self.q_infer.put(payload)
+                payload = {
+                    "cam_id":       self.cam_id,
+                    "color":        color,
+                    "depth":        depth,
+                    "depth_viz":    depth_viz,
+                    "timestamp_ns": time.time_ns(),
+                }
+                if not self.q_infer.full():
+                    self.q_infer.put(payload)
 
-            # Visualización (puede perder frames sin problema)
-            if not self.q_display.full():
-                self.q_display.put(payload)
-            
-            if not self.running:
-                break
+                if not self.q_display.full():
+                    self.q_display.put(payload)
+        finally:
+            # pipeline.stop() se llama desde el propio thread para evitar deadlock
+            self.cam.stop()
 
     def stop(self):
         self.running = False
-        self.cam.stop()
