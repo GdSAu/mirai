@@ -1,7 +1,7 @@
 # MIRAI — Multi-Camera Human-Object Interaction Analysis
 
 <p align="center">
-  <img src="graphical_abstract1.png" alt="MIRAI graphical abstract" width="700"/>
+  <img src="graphical_abstract.png" alt="MIRAI graphical abstract" width="700"/>
 </p>
 
 Sistema de detección y análisis de interacciones humano-objeto (HOI) en tiempo real con soporte multicámara. Combina una cámara RealSense RGB-D (con profundidad) y cámaras USB estándar para generar un mapa de calor top-down del espacio de trabajo.
